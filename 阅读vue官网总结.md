@@ -15,3 +15,32 @@ v-bind:class="{ active:isActive }" // 这是一个对象
 ```
 
 注意 :class 和 :style 的区别
+
+> v-for 遍历 Object.keys 的结果
+
+属性分为可枚举属性和不可枚举属性，可枚举属性通过以下访问到：
+```js
+Object.keys
+for...in
+JSON.stringify
+```
+不可枚举属性通过以下访问：
+```js
+Object.getOwnPropertyNames
+```
+> js中，以数字开头的属性名不能用“点号”引用，必须使用方括号
+
+> vue中使用组件的时候要注意理解这一点
+
+template应该使用反斜杠“\”, 或者使用 es6 里面定义的模版字符串
+
+组件内部通过使用 props 接受传递下来的数据，并且在某些情况下并不需要属性名相同，这样有一个极大的好处是使子组件与父组件充分<b>解藕</b>，且较方便追踪数据来源，有利于组件在其他场合复用
+
+> 事件修饰符 .passive
+
+```js
+element.addEventListener('touchstart', fn, passive)
+```
+作用：提升页面滑动流畅度
+
+原理：默认不会调用 event.preventDefault() 事件，当 touch 事件触发的时候，屏幕立即滚动。然而，通常事件触发之后，先执行回调完成后，并且没有用 event.preventDefault()，页面才开始滚动，这样就出现了页面卡顿的情况

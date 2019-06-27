@@ -1,3 +1,7 @@
+> 学习 Vue 的方法：
+- 第一步：官网仔细过一遍，官网上的例子敲一遍
+- 第二步：仿照 iView 实现几个典型组件，参照掘金小册子
+
 > 使用 watch 监听某个属性的时候，不要在 watch 内部更改这个属性，否则会执行 100 次
 
 > Vue 实例创建之后， Vue 会将模版编译成[虚拟dom]渲染函数，渲染好了之后，进入到 beforeMounted 生命周期
@@ -44,3 +48,14 @@ element.addEventListener('touchstart', fn, passive)
 作用：提升页面滑动流畅度
 
 原理：默认不会调用 event.preventDefault() 事件，当 touch 事件触发的时候，屏幕立即滚动。然而，通常事件触发之后，先执行回调完成后，并且没有用 event.preventDefault()，页面才开始滚动，这样就出现了页面卡顿的情况
+
+> Vue 组件的 data 必须是一个函数，原因是什么
+
+如果是一个对象的话，会出现多个实例引用一个 data 对象的情况，其中一个修改会引发其他实例的修改。然而，当 data 是一个函数的时候，每个实例的 data 会拥有独立的作用域，其中一个改变的时候不会影响到其他
+
+> v-model 在 input 元素上的使用原理进行分解
+```html
+<input v-model="searchText">
+// 分解如下：
+<input v-bind:value="searchText" v-on:input="searchText = $event.target.value">
+```

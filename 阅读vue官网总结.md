@@ -59,3 +59,15 @@ element.addEventListener('touchstart', fn, passive)
 // 分解如下：
 <input v-bind:value="searchText" v-on:input="searchText = $event.target.value">
 ```
+
+> 4 个 HTML 标签： b, strong, em, i
+
+b标签用于单纯的物理上加粗字体
+
+strong不仅加粗了字体，还表示该元素内容强烈重要
+
+em用于改变句子的意思，比如"我<em>喜欢</em>胡萝卜" 和"我喜欢<em>胡萝卜</em>"，分别强调喜欢和胡萝卜
+
+i用于技术术语
+
+<image src="images/html1.jpeg" width="400px" />

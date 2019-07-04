@@ -71,3 +71,49 @@ em用于改变句子的意思，比如"我<em>喜欢</em>胡萝卜" 和"我喜�
 i用于技术术语
 
 <image src="images/html1.jpeg" width="400px" />
+
+> $event
+
+将 v-model 应用于自定义组件的结果如下：
+```html
+<div id="app">
+    <!-- 以下2种写法都对！ -->
+    <input-number v-model="value"></input-number>
+    <input-number :value="value1" v-on:input="value1=$event"></input-number>
+</div>
+```
+
+子组件里面的触发形式如下：
+```js
+// this.currentValue是子组件内部定义的变量，将值传递给父组件，父组件里改变value
+this.$emit('input', this.currentValue); 
+```
+
+提出一个问题：在事件发生的时候，如果既需要传入 event, 又需要传递参数，该怎么做？
+
+```html
+<button v-on:click="click($event, 123)">click me</button>
+```
+如果不需要传参，又可以怎样访问 event 呢？
+
+```html
+<!-- 方法1: 下面这样肯定是没有问题的 -->
+<button v-on:click="click($event)">click me</button>
+<!-- 方法2: 记住不要带圆括号哦，那么在click方法里就可以直接使用 event 啦！ -->
+<button v-on:click="click">click me</button>
+```
+
+> 将上述例子使用 .sync 进行改写
+
+```html
+<div id="app">
+    <!-- <input-number v-model="value"></input-number> -->
+    <input-number v-bind:value.sync="value"></input-number>
+</div>
+```
+
+子组件里面的触发形式如下：
+```js
+// this.$emit('input', this.currentValue)
+this.$emit('update:value', this.currentValue)
+```

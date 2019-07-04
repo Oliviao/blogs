@@ -75,6 +75,8 @@ i用于技术术语
 > $event
 
 将 v-model 应用于自定义组件的结果如下：
+
+也可以这样提问：自定义组件里边的v-model是怎样实现的？
 ```html
 <div id="app">
     <!-- 以下2种写法都对！ -->
@@ -83,8 +85,10 @@ i用于技术术语
 </div>
 ```
 
-子组件里面的触发形式如下：
+子组件里面：
 ```js
+props: ['value']
+...
 // this.currentValue是子组件内部定义的变量，将值传递给父组件，父组件里改变value
 this.$emit('input', this.currentValue); 
 ```
@@ -117,3 +121,22 @@ this.$emit('input', this.currentValue);
 // this.$emit('input', this.currentValue)
 this.$emit('update:value', this.currentValue)
 ```
+
+> <em>计算属性computed</em>和<em>侦听属性watch</em>的区别
+
+计算属性通过监听依赖的变化返回一个动态值，重点在于返回了一个动态值，那么它有两个选项：get 和 set。而侦听属性则是侧重于监听到数据变化的时候，完成一系列逻辑任务，比如：执行异步操作或者开销比较大的操作，它有三个选项: handler、deep、immediate(会立即执行哒哒哒)
+
+> <em>计算属性computed</em>和<em>方法methods</em>的区别
+
+<image src="images/vue1.jpeg" width="600px" />
+
+> 事件修饰符
+
+来一波“记忆轨迹”，在已知的知识基础上增加联想记忆，更有助于理解。当然还是要多看官网，更正对这一部分知识的理解，多次更正，反复学习。
+
+<image src="images/vue2.jpeg" width="600px" />
+
+
+> props单向数据流允许父组件改变子组件的状态，那么，子组件想要改变父组件的状态该怎么办呢？
+
+3种办法：this.$emit、v-model、.sync

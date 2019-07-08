@@ -1,0 +1,66 @@
+<html>
+    <head></head>
+    <body>
+        hello, 欢迎来到 MVVM!
+        <div id="app">
+            看这里
+            <!-- <input type="text" v-model="word"> -->
+            <p>{{ word }}</p>
+            
+        </div>
+
+        <script>
+            // src="./js/compile.js"
+            function Compile(options) {
+                var el = options.el
+                var data = options.data
+
+                el = document.getElementById(el.slice(1))
+
+                // 文档碎片
+                var fragment = document.createDocumentFragment()
+                fragment.appendChild(el)
+                fragment = fragment.childNodes[0]
+
+                // 解析渲染html中的{{ }}
+                console.log(fragment)
+                var childNodes = fragment.childNodes
+                console.log(childNodes)
+                childNodes.forEach(node => {
+                    var reg = /\{\{(.*)\}\}/g
+                    // if(node.innerText) {
+                        // node.innerText.replace(reg, function(match, p1) {
+                        //     console.log('data[' + p1 + ']')
+                        //     console.log('===', match, p1, data, data[p1])
+                        //     // 这种方式来修改
+                        //     node.innerHTML = 'lalal'
+                        // })
+                    // }
+                    if(node.nodeType == 1) {
+                        console.log('===', node)
+                        
+                        node.innerHTML = "lily"
+                    }
+                })
+                console.log(fragment)
+            }
+        </script>
+        <script>
+            // src="./js/mvvm.js"
+            function MVVM(options) {
+                this.$options = options
+    
+                new Compile(options)
+            }    
+        </script>
+        <script>
+            var vm = new MVVM({
+                el: '#app',
+                data: {
+                    word: 'hello, lily'
+                }
+            })
+        </script>
+    </body>
+</html>
+

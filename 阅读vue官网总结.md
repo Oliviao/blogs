@@ -140,3 +140,7 @@ this.$emit('update:value', this.currentValue)
 > props单向数据流允许父组件改变子组件的状态，那么，子组件想要改变父组件的状态该怎么办呢？
 
 3种办法：this.$emit、v-model、.sync
+
+> vue 的组件间通信
+
+<image src="images/vue3.jpeg" width="600px" />

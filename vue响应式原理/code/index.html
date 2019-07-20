@@ -1,21 +1,28 @@
 <html>
     <head></head>
     <body>
-        hello, 欢迎来到 MVVM!
+        hello, 欢迎来到 MVVM!<br><br>
+        -------------------------------
+        <br><br>
+
         <div id="app">
             看这里
             <!-- <input type="text" v-model="word"> -->
             <p>{{ word }}</p>
+            <div>{{ name }}</div>
             
         </div>
 
         <script>
+            // https://segmentfault.com/a/1190000006599500#articleHeader3
             // src="./js/compile.js"
             function Compile(options) {
                 var el = options.el
                 var data = options.data
 
                 el = document.getElementById(el.slice(1))
+                this.$el = document.createElement('div')
+                this.$el.setAttribute('id', el)
 
                 // 文档碎片
                 var fragment = document.createDocumentFragment()
@@ -27,22 +34,20 @@
                 var childNodes = fragment.childNodes
                 console.log(childNodes)
                 childNodes.forEach(node => {
-                    var reg = /\{\{(.*)\}\}/g
-                    // if(node.innerText) {
-                        // node.innerText.replace(reg, function(match, p1) {
-                        //     console.log('data[' + p1 + ']')
-                        //     console.log('===', match, p1, data, data[p1])
-                        //     // 这种方式来修改
-                        //     node.innerHTML = 'lalal'
-                        // })
-                    // }
-                    if(node.nodeType == 1) {
-                        console.log('===', node)
-                        
-                        node.innerHTML = "lily"
+                    var reg = /\{\{(.*)\}\}/
+                    if(reg.test(node.innerHTML)) {
+                        console.log(''+ node.innerHTML.replace(reg, '$1'))
+                        var x = ''+ node.innerHTML.replace(reg, '$1')
+                        var key = node.innerHTML.replace(reg, '$1').trim()
+                        node.innerHTML = data[key]
                     }
                 })
                 console.log(fragment)
+
+                // 文档碎片替换真实dom
+                this.$el.appendChild(fragment)
+                console.log(this.$el.innerHTML, el)
+                document.body.appendChild(el)
             }
         </script>
         <script>
@@ -57,7 +62,8 @@
             var vm = new MVVM({
                 el: '#app',
                 data: {
-                    word: 'hello, lily'
+                    word: 'hello, lily',
+                    name: 'lily1'
                 }
             })
         </script>

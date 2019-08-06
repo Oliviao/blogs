@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+          .wrap{
+            width: 256px;
+            height: 256px;
+            border: 1px solid rgba(0,0,0,.5);
+            display:flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items:flex-end;
+          }
+          .wrap>div{
+            width: 20px;
+          }
+        </style>
+    </head>
+    <body>
+        <div class="wrap"></div>
+        <button>快速排序</button>
+
+
+      <script type="text/javascript">
+        var button = document.querySelector('button')
+        var parent = document.getElementsByClassName('wrap')[0]
+
+        var array = []
+
+        function init(){
+
+          for(var i=0;i<10;i++){
+            var newElement = document.createElement('div')
+            var random = Math.random()
+            array.push(Math.floor(random*256))
+          	var height = 256*random+'px'
+          	var backgroundColor = '#'+(random+'').slice(-6)
+          
+          	newElement.style.height = height
+          	newElement.style.backgroundColor=backgroundColor
+          	parent.appendChild(newElement)
+          }
+        }
+
+        init()
+        var son = parent.children
+        console.log(son) 
+        
+        // 快速排序
+        function Partition(arr,length,start,end){
+            if(length<2 || start<0 || end>length-1){
+                return
+            }
+            var index
+            var small=start-1
+            var k
+            for(index=start;index<end;index++){
+                if(arr[index]<arr[end]){
+                    small++
+                    if(small!==index){
+                      // 在此交换1
+                        k=arr[small]
+                        arr[small]=arr[index]
+                        arr[index]=k
+                        son[index].style.height=arr[index]+'px'
+                        son[small].style.height=arr[small]+'px'  
+                    }
+                }
+            }
+            small++
+            // 在此交换2
+            k=arr[end]
+            arr[end]=arr[small]
+            arr[small]=k
+            son[end].style.height=arr[end]+'px'
+            son[small].style.height=arr[small]+'px'
+
+            return small
+        }
+
+        function quickSort(arr,length,start,end){
+            if(length<2 || start==end){
+                return
+            }
+            var index=Partition(arr,length,start,end)
+            if(index>start){
+                quickSort(arr,length,start,index-1)
+            }
+            if(index<end){
+                quickSort(arr,length,index+1,end)
+            }
+        }
+
+        //快速排序入口
+        var times=0 //控制快速排序的速度
+        button.onclick=function(){
+          // var arr=[74, 58, 54, 87, 42, 101, 118, 183, 223, 249]
+          var length=array.length
+          quickSort(array,length,0,length-1)
+          console.log(array)
+        }
+      </script>
+    </body>
+</html>

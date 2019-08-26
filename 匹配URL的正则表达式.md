@@ -1,3 +1,5 @@
+代码实现：
+
 ```js
 var str='git://www.baidu.com:8080/dir/index.html?name=lily&sex=lady#fragment/y'
 

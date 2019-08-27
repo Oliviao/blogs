@@ -17,6 +17,10 @@ console.log(str)
 var reg=/<\/?([a-z]+)([^>]*)>/g
 var item
 while(item=reg.exec(str)){
-    console.log(item[0]+'-------'+item[2])
+    //console.log(item[0]+'-------'+item[2])
 }
+
+var result=str.match(reg)
+console.log(result)
 ```
+<img src="images/reg2.jpeg" width="800px"/>

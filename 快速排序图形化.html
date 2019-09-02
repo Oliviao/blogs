@@ -14,6 +14,7 @@
           }
           .wrap>div{
             width: 20px;
+            transition: 1s ease;
           }
         </style>
     </head>
@@ -27,6 +28,8 @@
         var parent = document.getElementsByClassName('wrap')[0]
 
         var array = []
+        var map = []
+        var mapIndex = 0
 
         function init(){
 
@@ -63,8 +66,10 @@
                         k=arr[small]
                         arr[small]=arr[index]
                         arr[index]=k
-                        son[index].style.height=arr[index]+'px'
-                        son[small].style.height=arr[small]+'px'  
+                        //son[index].style.height=arr[index]+'px'
+                        //son[small].style.height=arr[small]+'px'
+                        map[mapIndex] = arr.slice()
+                        mapIndex++
                     }
                 }
             }
@@ -73,9 +78,10 @@
             k=arr[end]
             arr[end]=arr[small]
             arr[small]=k
-            son[end].style.height=arr[end]+'px'
-            son[small].style.height=arr[small]+'px'
-
+            //son[end].style.height=arr[end]+'px'
+            //son[small].style.height=arr[small]+'px'
+            map[mapIndex] = arr.slice()
+            mapIndex++
             return small
         }
 
@@ -98,7 +104,18 @@
           // var arr=[74, 58, 54, 87, 42, 101, 118, 183, 223, 249]
           var length=array.length
           quickSort(array,length,0,length-1)
-          console.log(array)
+          console.log(map)
+
+          var timer = setInterval(function(){
+            if(map.length){
+              var item = map.shift()
+              for(var i = 0; i < 10; i++){
+                son[i].style.height=item[i]+'px'
+              }
+            }else {
+              clearInterval(timer)
+            }
+          },2000)
         }
       </script>
     </body>

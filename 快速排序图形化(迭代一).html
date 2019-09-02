@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+            .rootElementClass {
+                border: 1px solid black;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-end;
+                padding-top: 50px;
+                color: #ffffff;
+            }
+            button {
+                margin: 40px;
+                padding: 10px;
+            }
+            @keyframes toggle {
+                from {
+                    box-shadow: 0 0 10px rgb(205, 0, 0); 
+                }
+                to {
+                    box-shadow: 0 0 10px rgb(205, 0, 0); 
+                }
+            }
+            .toggle {
+                animation: toggle 2s;
+            }
+            .count {
+                font-size: 20px;
+                padding: 10px 30px;
+                color: white;
+                background-color: rgb(205, 0, 0);
+            }
+            .count > span {
+                font-size: 1.5em;
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap"></div>
+        <button id="init">初始化</button>
+        <button id="sort">点击进行排序</button>
+        <span class="count">第<span id="count">0</span>次排序</span>
+        <script>
+            console.log(1)
+            // 容器元素
+            var wrap = document.querySelector('.wrap')
+            var count = 0
+            var countElement = document.getElementById('count')
+
+            // 生成单个div
+            class Node{
+                constructor(height = 0, width = 30){
+                    var node = document.createElement('div')
+                    node.style.height = height + 'px'
+                    node.style.width = width + 'px'
+                    node.style.backgroundColor = '#' + Math.random().toString().slice(2,8)
+                    node.innerHTML = height
+                    //return node
+                    this.node = node
+                }
+                get() {
+                    return this.node
+                }
+            }
+
+            // 交换dom
+            function swapElements(rootElement, a, b) {
+                var eleA = rootElement.children[a]
+                var eleB = rootElement.children[b]
+                
+                // 添加CSS效果
+                eleA.className = 'toggle'
+                eleB.className = 'toggle'
+
+                var a = document.createElement('a')
+                        
+                rootElement.insertBefore(a, eleA)
+                rootElement.insertBefore(eleA, eleB)
+                rootElement.insertBefore(eleB, a)
+                        
+                rootElement.removeChild(a)
+            }
+
+            // 渲染容器
+            // item包含list=[]、a、b
+            function render(item, rootElement = document.querySelector('div')){
+                var list = item.arr
+                if(list.length<=1){
+                    return
+                }
+                var length = list.length
+                rootElement.className = 'rootElementClass'
+
+                // 如果界面空空，是需要渲染一次的
+                if(rootElement.children.length == 0) {
+                    for(var i=0; i<length; i++){
+                        // 生成单个元素
+                        var node = new Node(list[i]).get()
+                        rootElement.appendChild(node)
+                    }
+                }else {
+                    console.log(1)
+                    console.log(item)  
+                    var a = item.a || 0
+                    var b = item.b || 0
+                    if(a === b) {
+                        rootElement.children[a].className = 'toggle'
+                        return
+                    }else {
+                        // 确实有两个元素需要交换
+                        swapElements(rootElement, a, b)
+                    }                
+                }
+                
+            }
+
+            // 记录快排的过程
+            var changeState = []
+
+            // 算法：快排
+            function Partition(array, start, end){
+                if(start >= end) {
+                    return
+                }
+            
+                var slow = start
+                var index = end
+                for(var fast = start; fast < end; fast++){
+                    if(array[fast] <= array[index]) {
+                        if(slow !== fast) {
+                            var k =array[slow]
+                            array[slow] = array[fast]
+                            array[fast] = k
+                            
+                            // 收集状态1
+                            var x = {}
+                            x.arr = array.slice()
+                            x.a = slow
+                            x.b = fast
+                            changeState.push(x)
+                        }
+                        slow++
+                    } 
+                }
+            
+                var k = array[slow]
+                array[slow] = array[index]
+                array[index] = k
+            
+                // 收集状态2
+                var x = {}
+                x.arr = array.slice()
+                x.a = slow
+                x.b = index
+                changeState.push(x)
+
+                index = slow
+                return index
+            }
+            function quickSort(arr, start, end) {
+                if(start >= end) {
+                    return
+                }
+                var index = Partition(arr, start, end)
+                if(index > start) {
+                    quickSort(arr, start, index - 1)
+                }
+                if(index < end) {
+                    quickSort(arr, index + 1, end)
+                }
+            }
+
+            function clean(){
+                // 每次渲染之前，先清空所有子节点
+                while(wrap.firstChild){
+                    wrap.removeChild(wrap.firstChild)
+                }
+            }
+
+            var initArray = [] 
+            function init(){
+                clean()
+
+                initArray = [74, 58, 54, 87, 42, 101, 118, 183, 223, 249]
+
+                render({'arr': initArray})
+            }
+
+            // 初始化
+            init()
+
+            // 为按钮添加事件
+            var initButton = document.getElementById('init')
+            var sortButton = document.getElementById('sort')
+            initButton.onclick = function(){
+                init()
+            }
+
+            var timer = null
+            sortButton.onclick = function(){
+                if(initArray.length == 0) {
+                    return
+                }
+                // 如果正在排序的话，就先不打扰啦
+                if(timer !== null) {
+                    return
+                }
+
+                quickSort(initArray, 0, initArray.length - 1)
+                console.log('快速排序的过程：', changeState)
+                
+                timer = setInterval(function(){
+                    if(changeState.length === 0) {
+                        clearInterval(timer)
+                        count = 0
+                        return
+                    }
+                    count++
+                    countElement.innerHTML = count
+                    var item = changeState.shift()
+                    console.log(changeState)
+                    render(item)
+                }, 2000)
+            }
+        </script>
+    </body>
+</html>

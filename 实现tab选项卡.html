@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        .tab li{float:left;width:50px;height:20px;list-style: none;}
+        .tab:after{content: '';display:block;clear:both;}
+        .content li{width:200px;height:200px;border:solid 1px red;position:absolute;display: none;}
+        .content .current{display:block;}
+        .tab .active{background-color: red;}
+    </style>
+</head>
+<body>
+<div>
+    <ul class="tab">
+        <li data-key='0' class="active">选项一</li>
+        <li data-key='1'>选项二</li>
+        <li data-key='2'>选项三</li>
+        <li data-key='3'>选项四</li>
+    </ul>
+    <ul class="content">
+        <li class="current">内容一</li>
+        <li>内容二</li>
+        <li>内容三</li>
+        <li>内容四</li>
+    </ul>
+</div>
+<script type="text/javascript">
+    var tab = document.querySelector('.tab')
+    var tabCart = tab.children
+    var content = document.querySelector('.content')
+    var contentCart = content.children
+    tab.addEventListener('click',function(e){
+
+        var key = e.target.dataset.key
+
+        tabCart[key].classList.add("active")
+        Array.from(tabCart).forEach((ele, index) => {
+            if(index != key) {
+                ele.classList.remove("active")
+            }
+        })
+        
+        contentCart[key].classList.add("current")
+        Array.from(contentCart).forEach((ele, index) => {
+            if(index != key) {
+                ele.classList.remove("current")
+            }
+        })
+    })
+</script>
+</body>
+
+</html>

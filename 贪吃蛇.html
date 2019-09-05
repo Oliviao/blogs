@@ -58,12 +58,22 @@
             var map = new Map()
             map.create()
 
+            class Block{
+                constructor(x, y, color){
+                    this.x = x
+                    this.y = y
+                    this.color = color || "green"
+                }
+            }
+
             // 食物
-            class Food{
+            class Food extends Block{
                 constructor(){
-                    this.x = Math.floor(Math.random()*20)
-                    this.y = Math.floor(Math.random()*20)
-                    this.color = '#ff' + String(Math.random()).slice(2,6)
+                    var x = Math.floor(Math.random()*20)
+                    var y = Math.floor(Math.random()*20)
+                    var color = '#ff' + String(Math.random()).slice(2,6)
+                    // 继承
+                    super(x, y, color)
 
                     var div = document.createElement('div')
                     div.style.backgroundColor = this.color
@@ -82,15 +92,6 @@
                 }
             }
             var food = new Food()
-            console.log(food)
-
-            class Block{
-                constructor(x, y, color){
-                    this.x = x
-                    this.y = y
-                    this.color = color || "green"
-                }
-            }
 
             // 蛇
             class Snake{

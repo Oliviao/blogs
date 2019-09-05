@@ -84,23 +84,29 @@
             var food = new Food()
             console.log('--food', food)
 
+            // class Block{
+            //     constructor(x, y, color){}
+            // }
+
             // 蛇
-            function Snake(){
-                this.width = 1
-                this.height = 1
-                this.direction = 'right'
-                // [x, y, color]
-                this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
-                this.init = function(){
+            class Snake{
+                constructor(){
+                    this.width = 1
+                    this.height = 1
+                    this.direction = 'right'
+                    // [x, y, color]
                     this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
+                    this.init = function(){
+                        this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
+                    }
                 }
-                this.createSnake = function(){
+                createSnake(){
                     this.remove()
-                    
+
                     var length = this._snake.length
                     for(var i = 0; i < length; i++) {
                         var item = this._snake[i]
-
+                    
                         var div = document.createElement('div')
                         div.classList.add('snake')
                         div.style.position = 'absolute'
@@ -109,11 +115,11 @@
                         div.style.backgroundColor = item[2]
                         div.style.width = this.width * UNIT + 'px'
                         div.style.height = this.height * UNIT + 'px'
-
+                    
                         map._map.appendChild(div)
-                    }
+                    } 
                 }
-                this.move = function(){
+                move(){
                     var direction = this.direction
                     // 蛇尾走到蛇头前边
                     var _snakeHead = this._snake[0]
@@ -155,6 +161,7 @@
 
                     // 碰撞检测:吃到食物
                     if(_snakeTail[0] == food.y && _snakeTail[1] == food.x) {
+                        _snakeTailCopy[2] = food.backgroundColor
                         this._snake.push(_snakeTailCopy)
                         food._food.remove()
 
@@ -167,7 +174,7 @@
                         this.move()
                     }, 500)
                 }
-                this.remove = function(){
+                remove(){
                     var snake = document.getElementsByClassName('snake')
                     for(var i = snake.length - 1; i >= 0; i--) {
                         map._map.removeChild(snake[i]);

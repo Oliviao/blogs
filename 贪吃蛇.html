@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            .map{
+                position: relative;
+                width: 400px;
+                height: 400px;
+                margin: 20px;
+                background: -webkit-linear-gradient(top, transparent 19px, rgb(71, 66, 68) 20px),-webkit-linear-gradient(left, transparent 19px, rgb(71, 66, 68) 20px);
+                background-size: 20px 20px;
+                background-color: black;
+            }
+            .snake > div {
+                width: 20px;
+                height: 20px;
+                background-color: red;
+            }
+            button{
+                width: 80px;
+                height: 60px;
+                cursor: pointer;
+                font-size: 20px;
+            }
+            button:hover {
+                background-color: blanchedalmond;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <button class="reset button">重置</button>
+            <button class="start button">开始</button>
+        </div>
+        <script>
+            // 遗留问题：点击“重置”有用，检测碰撞到自己了，整体逻辑整理一下
+            var UNIT = 20
+            // 400*400
+            var RESET_BUTTON = document.querySelector('.reset')
+            var START_BUTTON = document.querySelector('.start')
+            var WRAP = document.querySelector('.wrap')
+
+            class Map{
+                constructor(){
+                    this.width = 20
+                    this.height = 20
+                    this._unit = 20
+                    this._map = null
+                }
+                create() {
+                    var div = document.createElement('div')
+                    div.classList.add('map')
+
+                    this._map = div
+                    WRAP.insertBefore(div, WRAP.firstChild)
+                }
+            }
+            var map = new Map()
+            map.create()
+
+            // 食物
+            class Food{
+                constructor(){
+                    this.x = Math.floor(Math.random()*20)
+                    this.y = Math.floor(Math.random()*20)
+                    this.backgroundColor = '#ff' + String(Math.random()).slice(2,6)
+                    this._food = null
+                }
+                create() {
+                    var div = document.createElement('div')
+                    div.style.backgroundColor = this.backgroundColor
+                    div.style.position = 'absolute'
+                    div.style.left = this.x * 20 + 'px'
+                    div.style.top = this.y * 20 + 'px'
+                    div.style.width = UNIT + 'px'
+                    div.style.height = UNIT + 'px'
+                    div.style.borderRadius = UNIT/2 + 'px'
+
+                    map._map.appendChild(div)
+
+                    this._food = div
+                }
+            }
+            var food = new Food()
+            console.log('--food', food)
+
+            // 蛇
+            function Snake(){
+                this.width = 1
+                this.height = 1
+                this.direction = 'right'
+                // [x, y, color]
+                this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
+                this.init = function(){
+                    this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
+                }
+                this.createSnake = function(){
+                    this.remove()
+                    
+                    var length = this._snake.length
+                    for(var i = 0; i < length; i++) {
+                        var item = this._snake[i]
+
+                        var div = document.createElement('div')
+                        div.classList.add('snake')
+                        div.style.position = 'absolute'
+                        div.style.top = item[0] * UNIT + 'px'
+                        div.style.left = item[1] * UNIT + 'px'
+                        div.style.backgroundColor = item[2]
+                        div.style.width = this.width * UNIT + 'px'
+                        div.style.height = this.height * UNIT + 'px'
+
+                        map._map.appendChild(div)
+                    }
+                }
+                this.move = function(){
+                    var direction = this.direction
+                    // 蛇尾走到蛇头前边
+                    var _snakeHead = this._snake[0]
+                    var _snakeTail = this._snake[this._snake.length - 1]
+                    var _snakeTailCopy = this._snake[this._snake.length - 1].slice()
+
+                    switch(direction) {
+                        case 'right':
+                            _snakeTail[1] = _snakeHead[1] + 1
+                            _snakeTail[0] = _snakeHead[0]
+                            if(_snakeTail[1] > 19) {
+                                _snakeTail[1] = 0
+                            }
+                            break
+                        case 'down':
+                            _snakeTail[0] = _snakeHead[0] + 1
+                            _snakeTail[1] = _snakeHead[1]
+                            if(_snakeTail[0] > 19) {
+                                _snakeTail[0] = 0 
+                            }
+                            break
+                        case 'left':
+                            _snakeTail[1] = _snakeHead[1] - 1
+                            _snakeTail[0] = _snakeHead[0]
+                            if(_snakeTail[1] < 0) {
+                                _snakeTail[1] = 19
+                            }
+                            break
+                        case 'up':
+                            _snakeTail[0] = _snakeHead[0] - 1
+                            _snakeTail[1] = _snakeHead[1]
+                            if(_snakeTail[0] < 0) {
+                                _snakeTail[0] = 19
+                            }
+                            break
+                    }
+
+                    this._snake.unshift(this._snake.pop())
+
+                    // 碰撞检测:吃到食物
+                    if(_snakeTail[0] == food.y && _snakeTail[1] == food.x) {
+                        this._snake.push(_snakeTailCopy)
+                        food._food.remove()
+
+                        food = new Food()
+                        food.create()
+                    }
+
+                    this.createSnake()
+                    setTimeout(() => {
+                        this.move()
+                    }, 500)
+                }
+                this.remove = function(){
+                    var snake = document.getElementsByClassName('snake')
+                    for(var i = snake.length - 1; i >= 0; i--) {
+                        map._map.removeChild(snake[i]);
+                    }
+                }
+            }
+            
+            var snake = new Snake()
+            
+            function init(){
+                food.create()
+
+                snake.createSnake()
+            }
+
+            // 初始化面板
+            init()
+
+            RESET_BUTTON.addEventListener('click', function(){
+                init()
+            })
+
+            START_BUTTON.addEventListener('click', function(){
+                snake.move()
+            })
+
+            document.addEventListener('keydown', function(event){
+                var code = event.code
+                switch(code) {
+                    case 'ArrowUp':
+                        if(snake.dir != 'down') {
+                            snake.direction = 'up'
+                        }
+                        break
+                    case 'ArrowDown':
+                        if(snake.direction != 'up') {
+                            snake.direction = 'down'
+                        }
+                        break
+                    case 'ArrowLeft':
+                        if(snake.direction != 'right') {
+                            snake.direction = 'left'
+                        }  
+                        break 
+                    case 'ArrowRight':
+                        if(snake.direction !== 'left') {
+                            snake.direction = 'right'
+                        }  
+                        break 
+                }
+            })
+        </script>
+    </body>
+</html>

@@ -30,7 +30,7 @@
     var tabCart = tab.children
     var content = document.querySelector('.content')
     var contentCart = content.children
-    tab.addEventListener('click',function(e){
+    tab.addEventListener('mouseover',function(e){
 
         var key = e.target.dataset.key
 
@@ -40,7 +40,7 @@
                 ele.classList.remove("active")
             }
         })
-        
+
         contentCart[key].classList.add("current")
         Array.from(contentCart).forEach((ele, index) => {
             if(index != key) {

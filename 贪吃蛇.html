@@ -63,30 +63,34 @@
                 constructor(){
                     this.x = Math.floor(Math.random()*20)
                     this.y = Math.floor(Math.random()*20)
-                    this.backgroundColor = '#ff' + String(Math.random()).slice(2,6)
-                    this._food = null
-                }
-                create() {
+                    this.color = '#ff' + String(Math.random()).slice(2,6)
+
                     var div = document.createElement('div')
-                    div.style.backgroundColor = this.backgroundColor
+                    div.style.backgroundColor = this.color
                     div.style.position = 'absolute'
                     div.style.left = this.x * 20 + 'px'
                     div.style.top = this.y * 20 + 'px'
-                    div.style.width = UNIT + 'px'
-                    div.style.height = UNIT + 'px'
-                    div.style.borderRadius = UNIT/2 + 'px'
-
-                    map._map.appendChild(div)
+                    div.style.width = '20px'
+                    div.style.height = '20px'
+                    div.style.borderRadius = '10px'
 
                     this._food = div
+                    map._map.appendChild(div)
+                }
+                remove() {
+                    this._food.remove()
                 }
             }
             var food = new Food()
-            console.log('--food', food)
+            console.log(food)
 
-            // class Block{
-            //     constructor(x, y, color){}
-            // }
+            class Block{
+                constructor(x, y, color){
+                    this.x = x
+                    this.y = y
+                    this.color = color || "green"
+                }
+            }
 
             // 蛇
             class Snake{
@@ -94,81 +98,63 @@
                     this.width = 1
                     this.height = 1
                     this.direction = 'right'
-                    // [x, y, color]
-                    this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
-                    this.init = function(){
-                        this._snake = [[8, 4, 'yellow'], [8, 3, 'green'], [8, 2, 'green'], [8, 1, 'green']]
-                    }
+                    this._snake = [].concat(new Block(4, 8, 'green'), new Block(3, 8, 'green'))
                 }
                 createSnake(){
                     this.remove()
 
                     var length = this._snake.length
                     for(var i = 0; i < length; i++) {
-                        var item = this._snake[i]
-                    
+                        var block = this._snake[i]
+
                         var div = document.createElement('div')
                         div.classList.add('snake')
                         div.style.position = 'absolute'
-                        div.style.top = item[0] * UNIT + 'px'
-                        div.style.left = item[1] * UNIT + 'px'
-                        div.style.backgroundColor = item[2]
-                        div.style.width = this.width * UNIT + 'px'
-                        div.style.height = this.height * UNIT + 'px'
-                    
+                        div.style.top = block.y * 20 + 'px'
+                        div.style.left = block.x * 20 + 'px'
+                        div.style.backgroundColor = block.color
+                        div.style.width = '20px'
+                        div.style.height = '20px'
+
                         map._map.appendChild(div)
-                    } 
+                    }
                 }
                 move(){
                     var direction = this.direction
                     // 蛇尾走到蛇头前边
+                    var _snakeTail = this._snake.pop()
+                    this._snake.unshift({..._snakeTail})
                     var _snakeHead = this._snake[0]
-                    var _snakeTail = this._snake[this._snake.length - 1]
-                    var _snakeTailCopy = this._snake[this._snake.length - 1].slice()
+                    var _snakeSecond = this._snake[1]
 
                     switch(direction) {
                         case 'right':
-                            _snakeTail[1] = _snakeHead[1] + 1
-                            _snakeTail[0] = _snakeHead[0]
-                            if(_snakeTail[1] > 19) {
-                                _snakeTail[1] = 0
-                            }
-                            break
-                        case 'down':
-                            _snakeTail[0] = _snakeHead[0] + 1
-                            _snakeTail[1] = _snakeHead[1]
-                            if(_snakeTail[0] > 19) {
-                                _snakeTail[0] = 0 
-                            }
+                            _snakeHead.x = (_snakeSecond.x + 1 > 19) ? 0 : _snakeSecond.x + 1
+                            _snakeHead.y = _snakeSecond.y
                             break
                         case 'left':
-                            _snakeTail[1] = _snakeHead[1] - 1
-                            _snakeTail[0] = _snakeHead[0]
-                            if(_snakeTail[1] < 0) {
-                                _snakeTail[1] = 19
-                            }
+                            _snakeHead.x = (_snakeSecond.x - 1 < 0) ? 19 : _snakeSecond.x - 1
+                            _snakeHead.y = _snakeSecond.y
                             break
                         case 'up':
-                            _snakeTail[0] = _snakeHead[0] - 1
-                            _snakeTail[1] = _snakeHead[1]
-                            if(_snakeTail[0] < 0) {
-                                _snakeTail[0] = 19
-                            }
+                            _snakeHead.y = (_snakeSecond.y - 1 < 0) ? 19 : _snakeSecond.y - 1
+                            _snakeHead.x = _snakeSecond.x
                             break
+                        case 'down':
+                            _snakeHead.y = (_snakeSecond.y + 1 > 19) ? 0 : _snakeSecond.y + 1
+                            _snakeHead.x = _snakeSecond.x
                     }
 
-                    this._snake.unshift(this._snake.pop())
-
-                    // 碰撞检测:吃到食物
-                    if(_snakeTail[0] == food.y && _snakeTail[1] == food.x) {
-                        _snakeTailCopy[2] = food.backgroundColor
-                        this._snake.push(_snakeTailCopy)
-                        food._food.remove()
+                    // 碰撞检测：吃到食物
+                    if(_snakeHead.x == food.x && _snakeHead.y == food.y) {
+                        console.log(true)
+                        _snakeTail.color = food.color
+                        this._snake.push(_snakeTail)
+                        food.remove()
 
                         food = new Food()
-                        food.create()
                     }
-
+                    
                     this.createSnake()
                     setTimeout(() => {
                         this.move()
@@ -185,8 +171,6 @@
             var snake = new Snake()
             
             function init(){
-                food.create()
-
                 snake.createSnake()
             }
 

@@ -1,10 +1,110 @@
 <!doctype html> 
 <html>
     <head>
-
+        <style>
+            .wrap {
+                position: relative;
+                width: 300px;
+                height: 180px;
+                margin: 50px auto 0;
+                /* border: 3px solid rgb(205, 0, 0);  */
+                overflow: hidden;
+            }
+            .items {
+                position: relative;
+                display: flex;
+                cursor: pointer;
+                font-size: 0;
+            }
+            .item {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            }
+            .item > img {
+                width: 300px;
+                height: 180px;
+            }
+            .item > .text {
+                position: absolute;
+                width: 100%;
+                bottom: -50px; 
+                font-size: 16px;
+                background-color: rgba(0, 0, 0, 0.3);
+                color: white;
+                text-align: center;
+                transition: 0.5s ease;
+            }
+            .item > .text > span{
+                display: inline-block;
+                text-align: left;
+            }
+            .item:hover > .text{
+                bottom: 0; 
+            }
+        </style>
     </head>
     <body>
+        <div class="wrap">
+            <div class="items">
+                <div class="item">
+                    <img src='./images/king/king1.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿,妲己～～</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src='./images/king/king2.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～, 陪你来玩儿</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src='./images/king/king3.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src='./images/king/king4.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src='./images/king/king5.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <img src='./images/king/king1.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
+            var items = document.getElementsByClassName('items')[0]
+            var i = 1
+            
+            var timer = setInterval(function(){
+                items.style.left = '-' + i * 300 + 'px'
+                i < 5 ? i++ : i = 1
+            }, 2000)
+            items.addEventListener('mouseover', function() {
+                console.log('---mouseover')
+                clearInterval(timer)
+            })
+
+            items.addEventListener('mouseout', function(){
+                console.log('---mouseout')
+                timer = setInterval(function(){
+                    items.style.left = '-' + i * 300 + 'px'
+                    i < 5 ? i++ : i = 1
+                }, 2000)
+            })
+            
         </script>
     </body>
 </html>

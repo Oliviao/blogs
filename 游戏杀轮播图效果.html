@@ -3,30 +3,41 @@
     <head>
         <style>
             .wrap {
-                position: relative;
-                width: 300px;
-                height: 180px;
-                margin: 50px auto 0;
-                /* border: 3px solid rgb(205, 0, 0);  */
+                width: 760px;
+                height: 300px;
+                overflow: hidden;
+                border: 2px pink solid;
                 overflow: hidden;
             }
             .items {
+                width: 500px;
+                height: 180px;
+                margin: 50px auto 0;
                 position: relative;
                 display: flex;
                 cursor: pointer;
                 font-size: 0;
             }
             .item {
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                margin: 0 50px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                position: relative;
+                width: 300px;
+                height: 180px;
+                opacity: 0.5;
             }
             .item > img {
                 width: 300px;
                 height: 180px;
             }
+            .show {
+                opacity: 1;
+            }
             .item > .text {
+                visibility: hidden;
                 position: absolute;
                 width: 100%;
-                bottom: -50px; 
+                bottom: 0; 
                 font-size: 16px;
                 background-color: rgba(0, 0, 0, 0.3);
                 color: white;
@@ -38,14 +49,19 @@
                 text-align: left;
             }
             .item:hover > .text{
-                bottom: 0; 
+                /* bottom: 0;  */
+                visibility: visible;
+            }
+            .first {
+                opacity: 1;
+                transform: scale(1.2);
             }
         </style>
     </head>
     <body>
         <div class="wrap">
             <div class="items">
-                <div class="item">
+                <div class="item first">
                     <img src='./images/king/king1.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿,妲己～～</span>
@@ -81,17 +97,32 @@
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
+                <div class="item">
+                    <img src='./images/king/king2.jpg'></image>
+                    <div class="text">
+                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～, 陪你来玩儿</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <script>
             var items = document.getElementsByClassName('items')[0]
+            var images = items.children
             var i = 1
-            
+            // 记录上一个显示的节点
+            var last = 0
+
             var timer = setInterval(function(){
-                items.style.left = '-' + i * 300 + 'px'
+                items.style.left = '-' + i * 400 + 'px'
+                images[i].style.opacity = '1'
+                images[i].style.transform = 'scale(1.2)'
+                images[last].style.opacity = '0.5'
+                images[last].style.transform = 'scale(1)'
+                last = i
                 i < 5 ? i++ : i = 1
             }, 2000)
+
             items.addEventListener('mouseover', function() {
                 console.log('---mouseover')
                 clearInterval(timer)
@@ -100,7 +131,7 @@
             items.addEventListener('mouseout', function(){
                 console.log('---mouseout')
                 timer = setInterval(function(){
-                    items.style.left = '-' + i * 300 + 'px'
+                    items.style.left = '-' + i * 400 + 'px'
                     i < 5 ? i++ : i = 1
                 }, 2000)
             })

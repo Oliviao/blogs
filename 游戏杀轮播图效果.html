@@ -5,6 +5,7 @@
             .wrap {
                 width: 760px;
                 height: 300px;
+                position: relative;
                 overflow: hidden;
                 border: 2px pink solid;
                 overflow: hidden;
@@ -25,6 +26,13 @@
                 width: 300px;
                 height: 180px;
                 opacity: 0.5;
+                transition: transform 1s ease;
+            }
+            .item > span {
+                font-size: 50px;
+                position: absolute;
+                top: 0;
+                color: yellow;
             }
             .item > img {
                 width: 300px;
@@ -48,13 +56,34 @@
                 display: inline-block;
                 text-align: left;
             }
+            .item:hover {
+                transform: scale(1.3)
+            }
             .item:hover > .text{
-                /* bottom: 0;  */
                 visibility: visible;
             }
             .first {
                 opacity: 1;
-                transform: scale(1.2);
+            }
+            .tips {
+                /* position: absolute; */
+                bottom: 0;
+                background-color: antiquewhite;
+                margin-top: 35px;
+                text-align: center;
+            }
+            .tips > span {
+                display: inline-block;
+                background-color:dimgray;
+                color: white;
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+                vertical-align: middle;
+                border-radius: 18px;
+            }
+            .tips > .tfirst {
+                background-color: red;
             }
         </style>
     </head>
@@ -62,65 +91,96 @@
         <div class="wrap">
             <div class="items">
                 <div class="item first">
+                    <span>1</span>
                     <img src='./images/king/king1.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿,妲己～～</span>
                     </div>
                 </div>
                 <div class="item">
+                    <span>2</span>
                     <img src='./images/king/king2.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～, 陪你来玩儿</span>
                     </div>
                 </div>
                 <div class="item">
+                    <span>3</span>
                     <img src='./images/king/king3.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
                 <div class="item">
+                    <span>4</span>
                     <img src='./images/king/king4.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
                 <div class="item">
+                    <span>5</span>
                     <img src='./images/king/king5.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
+                <!-- 借用 -->
                 <div class="item">
+                    <span>1</span>
                     <img src='./images/king/king1.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
+                <!-- 借用 -->
                 <div class="item">
+                    <span>2</span>
                     <img src='./images/king/king2.jpg'></image>
                     <div class="text">
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～, 陪你来玩儿</span>
                     </div>
                 </div>
             </div>
+            <div class='tips'>
+                <span data-index='0' class='tfirst'>1</span>
+                <span data-index='1'>2</span>
+                <span data-index='2'>3</span>
+                <span data-index='3'>4</span>
+                <span data-index='4'>5</span>
+            </div>
         </div>
 
         <script>
             var items = document.getElementsByClassName('items')[0]
-            var images = items.children
-            var i = 1
+            var item = document.getElementsByClassName('item')
+            var tips = document.getElementsByClassName('tips')[0]
+            var tip = tips.children
+            // console.log('---', tip)
+
+            // 记录当前节点
+            var index = 0
             // 记录上一个显示的节点
             var last = 0
 
-            var timer = setInterval(function(){
-                items.style.left = '-' + i * 400 + 'px'
-                images[i].style.opacity = '1'
-                images[i].style.transform = 'scale(1.2)'
-                images[last].style.opacity = '0.5'
-                images[last].style.transform = 'scale(1)'
-                last = i
-                i < 5 ? i++ : i = 1
+            var timer = null
+
+            // 根据index调整图片位置
+            function move(){
+                items.style.left = '-' + index * 400 + 'px'
+                item[index].style.opacity = '1'
+                tip[`${index == 5 ? 0 : index}`].style.backgroundColor = 'red'
+                item[last].style.opacity = '0.5'
+                tip[last].style.backgroundColor = 'dimgray'
+                last = index
+                // 每次移动完成之后，计算下一次位置
+                index < 4 ? index++ : index = 0
+            }
+
+            // 每次移动的距离：400px
+            index++
+            timer = setInterval(function(){
+                move()
             }, 2000)
 
             items.addEventListener('mouseover', function() {
@@ -131,9 +191,17 @@
             items.addEventListener('mouseout', function(){
                 console.log('---mouseout')
                 timer = setInterval(function(){
-                    items.style.left = '-' + i * 400 + 'px'
-                    i < 5 ? i++ : i = 1
+                    move()
                 }, 2000)
+            })
+            tips.addEventListener('click', function(event){
+                console.log('---tip mouseover---')
+                clearInterval(timer)
+                // 获取该元素，改变该元素的样式
+                var target = event.target
+                index = target.dataset.index
+                // 改变轮播图的位置
+                move()
             })
             
         </script>

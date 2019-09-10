@@ -10,6 +10,31 @@
                 border: 2px pink solid;
                 overflow: hidden;
             }
+            /* 显示出3D动画效果 */
+            .wrap::before {
+                width: 300px;
+                height: 180px;
+                content: '';
+                display: block;
+                background: url('./images/king/king5.jpg');
+                background-size: 300px 180px;
+                opacity: 0.5;
+                position: absolute;
+                top: 50px;
+                left: -220px;
+            }
+            .wrap::after {
+                width: 300px;
+                height: 180px;
+                content: '';
+                display: block;
+                background: url('./images/king/king1.jpg');
+                background-size: 300px 180px;
+                opacity: 0.5;
+                position: absolute;
+                top: 50px;
+                right: -120px;
+            }
             .items {
                 width: 500px;
                 height: 180px;
@@ -18,6 +43,13 @@
                 display: flex;
                 cursor: pointer;
                 font-size: 0;
+                opacity: 1;
+                /* 完美盖住了::before伪类，哈哈 */
+            }
+            .items::before{
+                content: '♥';
+                display: block;
+                
             }
             .item {
                 margin: 0 50px;
@@ -125,22 +157,6 @@
                         <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
                     </div>
                 </div>
-                <!-- 借用 -->
-                <div class="item">
-                    <span>1</span>
-                    <img src='./images/king/king1.jpg'></image>
-                    <div class="text">
-                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～</span>
-                    </div>
-                </div>
-                <!-- 借用 -->
-                <div class="item">
-                    <span>2</span>
-                    <img src='./images/king/king2.jpg'></image>
-                    <div class="text">
-                        <span>妲己～～陪你来玩儿, 妲己～ 妲己～ 妲己～, 陪你来玩儿</span>
-                    </div>
-                </div>
             </div>
             <div class='tips'>
                 <span data-index='0' class='tfirst'>1</span>
@@ -156,7 +172,6 @@
             var item = document.getElementsByClassName('item')
             var tips = document.getElementsByClassName('tips')[0]
             var tip = tips.children
-            // console.log('---', tip)
 
             // 记录当前节点
             var index = 0
@@ -183,25 +198,53 @@
                 move()
             }, 2000)
 
+
+            // 使用节流函数控制mouseover/mouseout触发的频率
+            var start = 0 // 好歹要触发一次呀
+            function throttle(fn, time = 10000){
+                var now = +new Date()
+                if(now - start > time) {
+                    fn()
+                    start = now
+                }
+            }
+
             items.addEventListener('mouseover', function() {
                 console.log('---mouseover')
-                clearInterval(timer)
+                if(!!timer) {
+                    clearInterval(timer)
+                    timer = null
+                }
             })
 
             items.addEventListener('mouseout', function(){
-                console.log('---mouseout')
-                timer = setInterval(function(){
-                    move()
-                }, 2000)
+                throttle(function(){
+                    console.log('---mouseout')
+                    if(!timer) {
+                        timer = setInterval(function(){
+                            move()
+                        }, 2000)
+                    }
+                })
             })
-            tips.addEventListener('click', function(event){
+            tips.addEventListener('click', function handle(event){
                 console.log('---tip mouseover---')
                 clearInterval(timer)
+                timer = null
                 // 获取该元素，改变该元素的样式
                 var target = event.target
                 index = target.dataset.index
                 // 改变轮播图的位置
                 move()
+                // 2秒之后还是要继续恢复定时器的
+                setTimeout(function(){
+                    console.log('----', timer)
+                    if(!timer){
+                        timer = setInterval(function(){
+                            move()
+                        }, 2000)
+                    }
+                }, 1000)
             })
             
         </script>

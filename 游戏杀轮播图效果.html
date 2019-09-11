@@ -203,8 +203,8 @@
 
             var timer = null
 
-            // 根据index调整图片位置
-            function move(){
+            // 移动位置：index
+            function move(dir="left"){
                 items.style.left = '-' + index * 400 + 'px'
                 item[index].style.opacity = '1'
                 tip[`${index == 5 ? 0 : index}`].style.backgroundColor = 'red'
@@ -212,13 +212,18 @@
                 tip[last].style.backgroundColor = 'dimgray'
                 last = index
                 // 每次移动完成之后，计算下一次位置
-                index < 4 ? index++ : index = 0
+                if(dir == 'left') {
+                    index > 0 ? index-- : index = 4
+                } else if(dir == 'right') {
+                    index < 4 ? index++ : index = 0
+                }
+                
             }
 
             // 每次移动的距离：400px
             index++
             timer = setInterval(function(){
-                move()
+                move('right')
             }, 2000)
 
 
@@ -232,18 +237,18 @@
                 }
             }
 
-            items.addEventListener('mouseover', function() {
-                console.log('---mouseover')
+            items.addEventListener('mouseover', function(event) {
                 if(!!timer) {
                     clearInterval(timer)
                     timer = null
                 }
             })
 
-            items.addEventListener('mouseout', function(){
+            items.addEventListener('mouseout', function(event){
                 throttle(function(){
-                    console.log('---mouseout')
+                    console.log('---mouseout', timer)
                     if(!timer) {
+                        console.log('===')
                         timer = setInterval(function(){
                             move()
                         }, 2000)
@@ -263,31 +268,22 @@
                 setTimeout(function(){
                     console.log('----', timer)
                     if(!timer){
+                        console.log('==')
                         timer = setInterval(function(){
-                            move()
+                            move('right')
                         }, 2000)
                     }
                 }, 1000)
             })
 
-            function move1(){
-                items.style.left = '-' + index * 400 + 'px'
-                item[index].style.opacity = '1'
-                tip[`${index == 5 ? 0 : index}`].style.backgroundColor = 'red'
-                item[last].style.opacity = '0.5'
-                tip[last].style.backgroundColor = 'dimgray'
-                last = index
-                // 每次移动完成之后，计算下一次位置
-                // index < 4 ? index++ : index = 0
-                index > 0 ? index-- : index = 4
-            }
-
             var left = document.getElementsByClassName('left')[0]
             left.addEventListener('click', function(){
                 console.log('---')
                 !!timer && clearInterval(timer)
+                // 点击之后立即动
+                move('left')
                 timer = setInterval(function(){
-                    move()
+                    move('left')
                 }, 2000)
             })
 
@@ -295,8 +291,10 @@
             right.addEventListener('click', function(){
                 console.log('---')
                 !!timer && clearInterval(timer)
+                // 点击之后立即动
+                move('right')
                 timer = setInterval(function(){
-                    move1()
+                    move('right')
                 }, 2000)
             })
             

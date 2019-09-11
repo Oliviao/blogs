@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body {
+                position: relative;
+            }
+            .ad{
+                width: 100px;
+                height: 100px;
+                background-color:tan;
+                cursor: pointer;
+                position: relative;
+                /* transition: 0.5s ease; */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ad" draggable=true>按住鼠标左键进行拖动</div>
+        <script>
+            var ad = document.getElementsByClassName('ad')[0]
+            var mouseX = 0
+            var mouseY = 0
+            ad.addEventListener('dragstart', function(event){
+                var position = ad.getBoundingClientRect()
+                mouseX = event.clientX - position.x
+                mouseY = event.clientY - position.y
+            })
+            ad.addEventListener('dragover', function(){
+                event.dataTransfer.dropEffect = 'move'
+            })
+            ad.addEventListener('dragend', function(event){
+                event.dataTransfer.dropEffect = 'move'
+                var x = event.clientX - mouseX
+                var y = event.clientY - mouseY
+                ad.style.left = x + 'px'
+                ad.style.top = y + 'px'
+            })
+        </script>
+    </body>
+</html>

@@ -245,15 +245,22 @@
             })
 
             items.addEventListener('mouseout', function(event){
-                throttle(function(){
-                    console.log('---mouseout', timer)
-                    if(!timer) {
-                        console.log('===')
-                        timer = setInterval(function(){
-                            move()
-                        }, 2000)
-                    }
-                })
+                console.log('---mouseout', timer)
+                if(!timer) {
+                    console.log('===')
+                    timer = setInterval(function(){
+                        move()
+                    }, 2000)
+                }
+                // throttle(function(){
+                //     console.log('---mouseout', timer)
+                //     if(!timer) {
+                //         console.log('===')
+                //         timer = setInterval(function(){
+                //             move()
+                //         }, 2000)
+                //     }
+                // })
             })
             tips.addEventListener('click', function handle(event){
                 console.log('---tip click---')

@@ -11,7 +11,7 @@
                 overflow: hidden;
             }
             /* 显示出3D动画效果 */
-            .wrap::before {
+            /* .wrap::before {
                 width: 300px;
                 height: 180px;
                 content: '';
@@ -34,7 +34,7 @@
                 position: absolute;
                 top: 50px;
                 right: -120px;
-            }
+            } */
             .items {
                 width: 500px;
                 height: 180px;
@@ -45,11 +45,6 @@
                 font-size: 0;
                 opacity: 1;
                 /* 完美盖住了::before伪类，哈哈 */
-            }
-            .items::before{
-                content: '♥';
-                display: block;
-                
             }
             .item {
                 margin: 0 50px;
@@ -100,9 +95,11 @@
             .tips {
                 /* position: absolute; */
                 bottom: 0;
-                background-color: antiquewhite;
+                /* background-color: antiquewhite; */
                 margin-top: 35px;
                 text-align: center;
+                width: 200px;
+                margin: 30px auto 0px;
             }
             .tips > span {
                 display: inline-block;
@@ -116,6 +113,28 @@
             }
             .tips > .tfirst {
                 background-color: red;
+            }
+            .dir {
+                color: white;
+                position: absolute;
+                bottom: 0;
+                font-size: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+            .dir > span {
+                display: inline-block;
+                width: 70px;
+                height: 35px;
+                line-height: 35px;
+                text-align: center;
+                background-color:darkgrey;
+                font-size: 30px;
+                cursor: pointer;
+            }
+            .dir > span:hover {
+                background-color: brown;
             }
         </style>
     </head>
@@ -164,6 +183,10 @@
                 <span data-index='2'>3</span>
                 <span data-index='3'>4</span>
                 <span data-index='4'>5</span>
+            </div>
+            <div class="dir">
+                <span class="left">向左</span>
+                <span class="right">向右</span>
             </div>
         </div>
 
@@ -245,6 +268,36 @@
                         }, 2000)
                     }
                 }, 1000)
+            })
+
+            function move1(){
+                items.style.left = '-' + index * 400 + 'px'
+                item[index].style.opacity = '1'
+                tip[`${index == 5 ? 0 : index}`].style.backgroundColor = 'red'
+                item[last].style.opacity = '0.5'
+                tip[last].style.backgroundColor = 'dimgray'
+                last = index
+                // 每次移动完成之后，计算下一次位置
+                // index < 4 ? index++ : index = 0
+                index > 0 ? index-- : index = 4
+            }
+
+            var left = document.getElementsByClassName('left')[0]
+            left.addEventListener('click', function(){
+                console.log('---')
+                !!timer && clearInterval(timer)
+                timer = setInterval(function(){
+                    move()
+                }, 2000)
+            })
+
+            var right = document.getElementsByClassName('right')[0]
+            right.addEventListener('click', function(){
+                console.log('---')
+                !!timer && clearInterval(timer)
+                timer = setInterval(function(){
+                    move1()
+                }, 2000)
             })
             
         </script>
